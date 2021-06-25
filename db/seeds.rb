@@ -11,19 +11,24 @@ require 'typhoeus'
 
 bearer_token = ENV["BEARER_TOKEN"]
 
-request = Typhoeus::Request.new("https://api.twitter.com/2/tweets/search/all", {
+request = Typhoeus::Request.new("https://api.twitter.com/1.1/search/tweets.json", {
   method: 'get',
   headers: {
     "User-Agent": "v2FullArchiveSearchRuby",
     "Authorization": "Bearer #{bearer_token}"
   },
   params: {
-    "query": "Virgin Galactic",
-    "max_results": 120,
-    "tweet.fields": "text",
-    "user.fields": "name"
+    "q": "Virgin Galactic",
+    "count": 120
   }
 })
 response = request.run
+results = JSON.parse(response.body)['statuses']
 
-puts response.code, JSON.pretty_generate(JSON.parse(response.body))
+results.each do |result|
+  puts result['id']
+  Tweet.create(
+    name: result['user']['name'],
+    text: result['text']
+  )
+end
