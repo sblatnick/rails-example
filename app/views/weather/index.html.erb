@@ -1,0 +1,8 @@
+<table>
+<% @places.each do |place| -%>
+  <tr>
+    <td class="name"><%= place['name'] -%></td>
+    <td class="max_temp">Average Max Temp: <%= place['max_temp'] -%></td>
+  </tr>
+<% end -%>
+</table>
